@@ -1,4 +1,7 @@
 {
+    "behat/transliterator": {
+        "version": "v1.2.0"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -74,6 +77,9 @@
     "friendsofsymfony/user-bundle": {
         "version": "v2.0.2"
     },
+    "gedmo/doctrine-extensions": {
+        "version": "v2.4.31"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
@@ -130,6 +136,15 @@
     },
     "psr/simple-cache": {
         "version": "1.0.0"
+    },
+    "stof/doctrine-extensions-bundle": {
+        "version": "1.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "1.2",
+            "ref": "6c1ceb662f8997085f739cd089bfbef67f245983"
+        }
     },
     "swiftmailer/swiftmailer": {
         "version": "v6.0.2"
@@ -211,6 +226,15 @@
     },
     "symfony/lts": {
         "version": "v3"
+    },
+    "symfony/maker-bundle": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.0",
+            "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
+        }
     },
     "symfony/options-resolver": {
         "version": "v3.4.2"
