@@ -5,4 +5,3 @@ fos_user:
     from_email:
         address: "noreply@yourcompany.com"
         sender_name: "No Reply"
-#    templating: "twig"
