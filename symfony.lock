@@ -59,6 +59,9 @@
     "egulias/email-validator": {
         "version": "2.1.3"
     },
+    "exsyst/swagger": {
+        "version": "v0.3.1"
+    },
     "friendsofsymfony/rest-bundle": {
         "version": "2.2",
         "recipe": {
@@ -79,6 +82,15 @@
     },
     "knplabs/knp-paginator-bundle": {
         "version": "v2.7.1"
+    },
+    "nelmio/api-doc-bundle": {
+        "version": "2.13",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "2.13",
+            "ref": "d13bb99357ebcd2ffb6fe808a64961f5bc1c7546"
+        }
     },
     "ocramius/package-versions": {
         "version": "1.2.0"
@@ -112,6 +124,9 @@
     },
     "swiftmailer/swiftmailer": {
         "version": "v6.0.2"
+    },
+    "symfony/asset": {
+        "version": "v3.4.2"
     },
     "symfony/cache": {
         "version": "v3.4.2"
@@ -295,5 +310,8 @@
     },
     "zendframework/zend-eventmanager": {
         "version": "3.2.0"
+    },
+    "zircote/swagger-php": {
+        "version": "2.0.13"
     }
 }

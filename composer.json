@@ -7,6 +7,8 @@
         "friendsofsymfony/rest-bundle": "^2.3",
         "friendsofsymfony/user-bundle": "~2.0",
         "knplabs/knp-paginator-bundle": "^2.7",
+        "nelmio/api-doc-bundle": "dev-master",
+        "symfony/asset": "^3.4",
         "symfony/console": "^3.4",
         "symfony/flex": "^1.0",
         "symfony/framework-bundle": "^3.4",
