@@ -89,6 +89,18 @@
     "knplabs/knp-paginator-bundle": {
         "version": "v2.7.1"
     },
+    "lexik/jwt-authentication-bundle": {
+        "version": "2.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "2.3",
+            "ref": "751ee6748c1026fa4350c155d1b3a77b7ddca69c"
+        }
+    },
+    "namshi/jose": {
+        "version": "7.2.3"
+    },
     "nelmio/api-doc-bundle": {
         "version": "2.13",
         "recipe": {
@@ -136,6 +148,15 @@
     },
     "psr/simple-cache": {
         "version": "1.0.0"
+    },
+    "sensio/framework-extra-bundle": {
+        "version": "4.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.0",
+            "ref": "aaddfdf43cdecd4cf91f992052d76c2cadc04543"
+        }
     },
     "stof/doctrine-extensions-bundle": {
         "version": "1.2",

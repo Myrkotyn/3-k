@@ -5,7 +5,7 @@ framework:
         enabled: true
 
     serializer:
-        enabled: true
+        enable_annotations: true
     #http_method_override: true
 
     # uncomment this entire section to enable sessions
@@ -21,3 +21,4 @@ framework:
     templating:
         engines: ['twig']
     assets: ~
+    validation: { enable_annotations: true }
