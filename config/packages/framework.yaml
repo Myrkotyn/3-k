@@ -7,6 +7,8 @@ framework:
     serializer:
         enable_annotations: true
     #http_method_override: true
+    property_info:
+        enabled: true
 
     # uncomment this entire section to enable sessions
     session:

@@ -7,23 +7,30 @@ use App\EventListener\NewsDeletedEvent;
 use App\Form\NewsType;
 use App\Helpers\BlameableEntityTrait;
 use App\Helpers\ControllerHelper;
+use App\Security\NewsVoter;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Swagger\Annotations as SWG;
 
+/**
+ * Class NewsController
+ *
+ * @Rest\Route("/news")
+ */
 class NewsController extends FOSRestController
 {
     use ControllerHelper;
     use BlameableEntityTrait;
 
     /**
-     * @Rest\Get("/api/news", name="get_all_news")
+     * @Rest\Get("", name="get_all_news")
      *
      * @param Request $request
      * @return Response
@@ -71,11 +78,11 @@ class NewsController extends FOSRestController
             $request->query->getInt('limit', 2)
         );
 
-        return new Response($this->serialize($pagination, 'json', $this->defaultNewsAttributes()), Response::HTTP_OK);
+        return new Response($this->get('serializer')->serialize($pagination, 'json', ['groups' => ['group1']]));
     }
 
     /**
-     * @Rest\Get("/api/news/{id}", name="get_news")
+     * @Rest\Get("/{id}", name="get_news")
      *
      * @param Request $request
      * @param         $id
@@ -102,11 +109,11 @@ class NewsController extends FOSRestController
             throw new NotFoundHttpException('News not found');
         }
 
-        return new Response($this->serialize($news, 'json', $this->defaultNewsAttributes()), Response::HTTP_OK);
+        return new Response($this->get('serializer')->serialize($news, 'json', ['groups' => ['group1']]), Response::HTTP_OK);
     }
 
     /**
-     * @Rest\Post("/api/news", name="new_news")
+     * @Rest\Post("", name="new_news")
      *
      * @param Request $request
      * @return Response|View
@@ -162,7 +169,7 @@ class NewsController extends FOSRestController
         ]);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $news->setCreatedBy($user);
             $news->setUpdatedBy($user);
@@ -174,11 +181,11 @@ class NewsController extends FOSRestController
             return $response;
         }
 
-        return View::create($form, 400);
+        return View::create($form, Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**
-     * @Rest\Put("/api/news/{id}", name="edit_news")
+     * @Rest\Put("/{id}", name="edit_news")
      *
      * @param Request $request
      * @param News    $news
@@ -235,7 +242,7 @@ class NewsController extends FOSRestController
         ]);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $news->setUpdatedBy($user);
             $em->persist($news);
@@ -250,7 +257,7 @@ class NewsController extends FOSRestController
     }
 
     /**
-     * @Rest\Delete("/api/news/{id}", name="delete_news")
+     * @Rest\Delete("/{id}", name="delete_news")
      *
      * @param Request $request
      * @param News    $news
@@ -278,7 +285,7 @@ class NewsController extends FOSRestController
         if (!$news instanceof News) {
             throw new NotFoundHttpException('News not found');
         }
-        $this->denyAccessUnlessGranted('delete', $news);
+        $this->denyAccessUnlessGranted(NewsVoter::DELETE, $news);
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($news);
@@ -288,7 +295,7 @@ class NewsController extends FOSRestController
         $event = new NewsDeletedEvent();
         $eventName = $dispatcher->dispatch(NewsDeletedEvent::NAME, $event)->eventName();
 
-        return new Response($this->serialize($eventName, 'json'), Response::HTTP_ACCEPTED);
+        return new JsonResponse($this->serialize($eventName, 'json'), Response::HTTP_NO_CONTENT);
     }
 
     private function defaultNewsAttributes()

@@ -9,18 +9,22 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTEncodeFailureException;
+use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
-use Swagger\Annotations as SWG;
 
+/**
+ * Class UserController
+ * @Rest\Route("/user")
+ */
 class UserController extends FOSRestController
 {
     use ControllerHelper;
 
     /**
-     * @Rest\Get("/api/user", name="get_all_users")
+     * @Rest\Get("", name="get_all_users")
      *
      * @param Request $request
      * @return Response
@@ -72,7 +76,7 @@ class UserController extends FOSRestController
 
     /**
      * @param int $id
-     * @Rest\Get("/api/user/{id}", name="get_user")
+     * @Rest\Get("/{id}", name="get_user")
      *
      * @return Response
      *
@@ -102,7 +106,7 @@ class UserController extends FOSRestController
 
     /**
      * @param Request $request
-     * @Rest\Post("/api/register", name="register")
+     * @Rest\Post("/register", name="register")
      *
      * @return Response|static|View
      *
@@ -166,7 +170,7 @@ class UserController extends FOSRestController
 
     /**
      * @param Request $request
-     * @Rest\Post("/api/login", name="login")
+     * @Rest\Post("/login", name="login")
      * @throws JWTEncodeFailureException
      *
      * @return Response|View
@@ -238,7 +242,7 @@ class UserController extends FOSRestController
     /**
      * @param Request $request
      * @param User    $user
-     * @Rest\Put("/api/user/{id}", name="edit_user")
+     * @Rest\Put("/{id}", name="edit_user")
      *
      * @return View|Response
      *
@@ -318,7 +322,7 @@ class UserController extends FOSRestController
     }
 
     /**
-     * @Rest\Delete("/api/user/{id}", name="delete_user")
+     * @Rest\Delete("/{id}", name="delete_user")
      *
      * @param Request $request
      * @param User    $user
@@ -358,7 +362,7 @@ class UserController extends FOSRestController
      * @return array
      * @throws JWTEncodeFailureException
      */
-    public function getToken(User $user)
+    private function getToken(User $user)
     {
         return $this->container->get('lexik_jwt_authentication.encoder')
             ->encode([

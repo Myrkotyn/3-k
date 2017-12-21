@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Helpers\BlameableEntityTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -26,6 +27,7 @@ class News
     /**
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
+     * @Groups({"group1"})
      */
     private $title;
 

@@ -21,6 +21,6 @@ trait ControllerHelper
         $normalizers = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, $encoders);
 
-        return $serializer->serialize($object, $format, ['attributes' => $attributes]);
+        return $serializer->serialize($object, $format, ["groups" => "group1"]);
     }
 }

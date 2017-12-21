@@ -37,7 +37,7 @@ class NewsVoter extends Voter
 
         switch ($attribute) {
             case self::DELETE:
-                return $this->catDelete($news, $user);
+                return $this->canDelete($news, $user);
             case self::EDIT:
                 return $this->canEdit($news, $user);
         }
@@ -48,7 +48,7 @@ class NewsVoter extends Voter
         return $user === $news->getCreatedBy();
     }
 
-    private function catDelete(News $news, User $user)
+    private function canDelete(News $news, User $user)
     {
         if ($this->canEdit($news, $user)) {
             return true;
