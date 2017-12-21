@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Swagger\Annotations as SWG;
 
 class NewsController extends FOSRestController
 {
@@ -24,6 +25,26 @@ class NewsController extends FOSRestController
      *
      * @param Request $request
      * @return Response
+     *
+     * @SWG\Response(
+     *     response="200",
+     *     description="return list of news"
+     * )
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     default="1",
+     *     type="integer",
+     *     description="The field used for choosing page on pagination"
+     * )
+     * @SWG\Parameter(
+     *     name="limit",
+     *     in="query",
+     *     default="2",
+     *     type="integer",
+     *     description="The field used for limit items per page"
+     * )
+     * @SWG\Tag(name="news")
      */
     public function allAction(Request $request)
     {
@@ -50,6 +71,12 @@ class NewsController extends FOSRestController
      * @param Request $request
      * @param         $id
      * @return Response
+     *
+     * @SWG\Tag(name="news")
+     * @SWG\Response(
+     *     response="200",
+     *     description="return news by id"
+     * )
      */
     public function getAction(Request $request, $id)
     {
@@ -67,6 +94,38 @@ class NewsController extends FOSRestController
      *
      * @param Request $request
      * @return Response|View
+     *
+     * @SWG\Tag(name="news")
+     * @SWG\Parameter(
+     *     name="news",
+     *     type="json",
+     *     required=true,
+     *     in="body",
+     *     description="json object of news",
+     *     @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(
+     *              property="news",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="title",
+     *                  type="string",
+     *              ),
+     *              @SWG\Property(
+     *                  property="description",
+     *                  type="string"
+     *              )
+     *          ),
+     *      )
+     * )
+     * @SWG\Response(
+     *     response="201",
+     *     description="created a new post of news"
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Expired JWT Token | JWT Token not found | Invalid JWT Token",
+     * )
      */
     public function newAction(Request $request)
     {
@@ -101,6 +160,38 @@ class NewsController extends FOSRestController
      * @param Request $request
      * @param News    $news
      * @return Response|View
+     *
+     * @SWG\Tag(name="news")
+     * @SWG\Parameter(
+     *     name="news",
+     *     type="json",
+     *     required=true,
+     *     in="body",
+     *     description="json object of news",
+     *     @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(
+     *              property="news",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="title",
+     *                  type="string",
+     *              ),
+     *              @SWG\Property(
+     *                  property="description",
+     *                  type="string"
+     *              )
+     *          ),
+     *      )
+     * )
+     * @SWG\Response(
+     *     response="201",
+     *     description="create a new post of news"
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Expired JWT Token | JWT Token not found | Invalid JWT Token",
+     * )
      */
     public function editAction(Request $request, News $news)
     {
@@ -120,7 +211,7 @@ class NewsController extends FOSRestController
             $em->persist($news);
             $em->flush();
 
-            $response = new Response($this->serialize($news, 'json', $this->defaultNewsAttributes()), Response::HTTP_CREATED);
+            $response = new Response($this->serialize($news, 'json', $this->defaultNewsAttributes()), Response::HTTP_OK);
 
             return $response;
         }
@@ -134,6 +225,12 @@ class NewsController extends FOSRestController
      * @param Request $request
      * @param News    $news
      * @return Response
+     *
+     * @SWG\Response(
+     *     response="202",
+     *     description="deleted news by id"
+     * )
+     * @SWG\Tag(name="news")
      */
     public function deleteAction(Request $request, News $news)
     {
