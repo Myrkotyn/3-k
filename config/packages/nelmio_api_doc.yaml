@@ -1,4 +1,7 @@
 nelmio_api_doc:
+    routes:
+        path_patterns:
+            ["^/api"]
     documentation:
         info:
             title: K-3 test app
