@@ -28,7 +28,7 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
     {
         $extractor = new AuthorizationHeaderTokenExtractor(
             '',
-            'token'
+            'Authorization'
         );
 
         $token = $extractor->extract($request);
