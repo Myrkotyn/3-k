@@ -196,6 +196,7 @@ class NewsController extends FOSRestController
     public function editAction(Request $request, News $news)
     {
         $user = $this->getUser();
+        $this->denyAccessUnlessGranted('edit', $news);
         if (null === $user) {
             throw new UnauthorizedHttpException('You need to be authorized');
         }
@@ -236,6 +237,7 @@ class NewsController extends FOSRestController
         if (!$news instanceof News) {
             throw new NotFoundHttpException('News not found');
         }
+        $this->denyAccessUnlessGranted('delete', $news);
 
         $em = $this->getDoctrine()->getManager();
         $em->remove($news);
