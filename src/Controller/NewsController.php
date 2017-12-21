@@ -44,6 +44,13 @@ class NewsController extends FOSRestController
      *     type="integer",
      *     description="The field used for limit items per page"
      * )
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     type="string",
+     *     description="JWT token for authentication",
+     *     required=true
+     * )
      * @SWG\Tag(name="news")
      */
     public function allAction(Request $request)
@@ -76,6 +83,13 @@ class NewsController extends FOSRestController
      * @SWG\Response(
      *     response="200",
      *     description="return news by id"
+     * )
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     type="string",
+     *     description="JWT token for authentication",
+     *     required=true
      * )
      */
     public function getAction(Request $request, $id)
@@ -117,6 +131,13 @@ class NewsController extends FOSRestController
      *              )
      *          ),
      *      )
+     * )
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     type="string",
+     *     description="JWT token for authentication",
+     *     required=true
      * )
      * @SWG\Response(
      *     response="201",
@@ -184,6 +205,13 @@ class NewsController extends FOSRestController
      *          ),
      *      )
      * )
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     type="string",
+     *     description="JWT token for authentication",
+     *     required=true
+     * )
      * @SWG\Response(
      *     response="201",
      *     description="create a new post of news"
@@ -229,6 +257,13 @@ class NewsController extends FOSRestController
      * @SWG\Response(
      *     response="202",
      *     description="deleted news by id"
+     * )
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     type="string",
+     *     description="JWT token for authentication",
+     *     required=true
      * )
      * @SWG\Tag(name="news")
      */
