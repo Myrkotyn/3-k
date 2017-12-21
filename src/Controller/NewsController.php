@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\News;
+use App\EventListener\NewsDeletedEvent;
 use App\Form\NewsType;
 use App\Helpers\BlameableEntityTrait;
 use App\Helpers\ControllerHelper;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -258,6 +260,10 @@ class NewsController extends FOSRestController
      *     response="202",
      *     description="deleted news by id"
      * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Not found"
+     * )
      * @SWG\Parameter(
      *     name="Authorization",
      *     in="header",
@@ -278,7 +284,11 @@ class NewsController extends FOSRestController
         $em->remove($news);
         $em->flush();
 
-        return new Response('', Response::HTTP_ACCEPTED);
+        $dispatcher = new EventDispatcher();
+        $event = new NewsDeletedEvent();
+        $eventName = $dispatcher->dispatch(NewsDeletedEvent::NAME, $event)->eventName();
+
+        return new Response($this->serialize($eventName, 'json'), Response::HTTP_ACCEPTED);
     }
 
     private function defaultNewsAttributes()
