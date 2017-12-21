@@ -13,7 +13,7 @@ class NewsVoter extends Voter
     const EDIT   = 'edit';
     const DELETE = 'delete';
 
-    protected function supports($attribute, $subject)
+    protected function supports($attribute, $subject): ? bool
     {
         if (!in_array($attribute, [self::EDIT, self::DELETE])) {
             return false;
@@ -25,7 +25,7 @@ class NewsVoter extends Voter
         return true;
     }
 
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute($attribute, $subject, TokenInterface $token): ? bool
     {
         $user = $token->getUser();
         if (!$user instanceof User) {
@@ -43,12 +43,12 @@ class NewsVoter extends Voter
         }
     }
 
-    private function canEdit(News $news, User $user)
+    private function canEdit(News $news, User $user): ? bool
     {
         return $user === $news->getCreatedBy();
     }
 
-    private function canDelete(News $news, User $user)
+    private function canDelete(News $news, User $user): ? bool
     {
         if ($this->canEdit($news, $user)) {
             return true;

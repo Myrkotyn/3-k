@@ -40,15 +40,15 @@ class News
     private $description;
 
     /**
-     * @return mixed
+     * @return integer
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getTitle(): ? string
     {
@@ -56,7 +56,7 @@ class News
     }
 
     /**
-     * @param mixed $title
+     * @param string $title
      *
      * @return News
      */
@@ -68,7 +68,7 @@ class News
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getDescription(): ? string
     {
@@ -76,7 +76,7 @@ class News
     }
 
     /**
-     * @param mixed $description
+     * @param string $description
      *
      * @return News
      */
