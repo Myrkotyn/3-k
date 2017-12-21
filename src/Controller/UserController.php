@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
+use Swagger\Annotations as SWG;
 
 class UserController extends FOSRestController
 {
@@ -23,6 +24,26 @@ class UserController extends FOSRestController
      *
      * @param Request $request
      * @return Response
+     *
+     * @SWG\Tag(name="users")
+     * @SWG\Parameter(
+     *     name="page",
+     *     in="query",
+     *     default="1",
+     *     type="integer",
+     *     description="The field used for choosing page on pagination"
+     * )
+     * @SWG\Parameter(
+     *     name="limit",
+     *     in="query",
+     *     default="2",
+     *     type="integer",
+     *     description="The field used for limit items per page"
+     * )
+     * @SWG\Response(
+     *     response="200",
+     *     description="return list of users"
+     * )
      */
     public function allAction(Request $request)
     {
@@ -47,6 +68,12 @@ class UserController extends FOSRestController
      * @Rest\Get("/api/user/{id}", name="get_user")
      *
      * @return Response
+     *
+     * @SWG\Tag(name="users")
+     * @SWG\Response(
+     *     response="200",
+     *     description="return user by id"
+     * )
      */
     public function getAction(int $id)
     {
@@ -64,6 +91,43 @@ class UserController extends FOSRestController
      * @Rest\Post("/api/register", name="register")
      *
      * @return Response|static|View
+     *
+     * @SWG\Tag(name="users")
+     * @SWG\Parameter(
+     *     name="body",
+     *     type="json",
+     *     required=true,
+     *     in="body",
+     *     description="json object of new user",
+     *     @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(
+     *              property="user",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="username",
+     *                  type="string"
+     *              ),
+     *              @SWG\Property(
+     *                  property="email",
+     *                  type="string",
+     *                  description="must be like email type"
+     *              ),
+     *              @SWG\Property(
+     *                  property="plainPassword",
+     *                  type="string"
+     *              ),
+     *          )
+     *      )
+     * )
+     * @SWG\Response(
+     *     response="201",
+     *     description="created a new user"
+     * )
+     * @SWG\Response(
+     *     response=401,
+     *     description="Expired JWT Token | JWT Token not found | Invalid JWT Token",
+     * )
      */
     public function registerAction(Request $request)
     {
@@ -88,10 +152,43 @@ class UserController extends FOSRestController
 
     /**
      * @param Request $request
+     * @Rest\Post("/api/login", name="login")
+     * @throws JWTEncodeFailureException
      *
      * @return Response|View
-     * @throws JWTEncodeFailureException
-     * @Rest\Post("/api/login", name="login")
+     *
+     * @SWG\Tag(name="users")
+     * @SWG\Response(
+     *     response="200",
+     *     description="user logged in"
+     * )
+     * @SWG\Response(
+     *     response="400",
+     *     description="Bad credentials"
+     * )
+     * @SWG\Parameter(
+     *     name="body",
+     *     type="json",
+     *     required=true,
+     *     in="body",
+     *     description="json object of user, which want to login",
+     *     @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(
+     *              property="user",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="email",
+     *                  type="string",
+     *                  description="must be like email type"
+     *              ),
+     *              @SWG\Property(
+     *                  property="plainPassword",
+     *                  type="string"
+     *              ),
+     *          )
+     *      )
+     * )
      */
     public function loginAction(Request $request)
     {
@@ -118,7 +215,7 @@ class UserController extends FOSRestController
 
             $token = $this->getToken($user);
 
-            return new Response($this->serialize(['token' => $token], 'json'), Response::HTTP_OK);
+            return new Response($this->serialize(['Authorization' => $token], 'json'), Response::HTTP_OK);
         }
 
         return View::create($form, 400);
@@ -130,22 +227,70 @@ class UserController extends FOSRestController
      * @Rest\Put("/api/user/{id}", name="edit_user")
      *
      * @return View|Response
+     *
+     * @SWG\Tag(name="users")
+     * @SWG\Response(
+     *     response="200",
+     *     description="Updated user"
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Not found"
+     * )
+     * @SWG\Response(
+     *     response="400",
+     *     description="Form is not valid, or not submitted"
+     * )
+     * @SWG\Response(
+     *     response="500",
+     *     description="Duplicate some value"
+     * )
+     * @SWG\Parameter(
+     *     name="body",
+     *     type="json",
+     *     required=true,
+     *     in="body",
+     *     description="json object of edited user",
+     *     @SWG\Schema(
+     *          type="object",
+     *          @SWG\Property(
+     *              property="user",
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="username",
+     *                  type="string"
+     *              ),
+     *              @SWG\Property(
+     *                  property="email",
+     *                  type="string",
+     *                  description="must be like email type"
+     *              )
+     *          )
+     *      )
+     * )
      */
     public function editAction(Request $request, User $user)
     {
-        $form = $this->createForm(UserType::class, $user);
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository('App:User')
+            ->findOneBy(['email' => $user->email]);
+
+        if (!$user) {
+            throw $this->createNotFoundException();
+        }
+
+        $form = $this->createForm(UserType::class, $user, [
+            'method' => 'PUT',
+        ]);
         $form->handleRequest($request);
 
-        if ($form->isValid()) {
-            $apiUser = $form->getData();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($user);
+            $em->flush();
 
-            $user = $this->getDoctrine()
-                ->getRepository('App:User')
-                ->findOneBy(['email' => $apiUser->email]);
+            $response = new Response($this->serialize($user, 'json', ['id', 'username', 'email']), Response::HTTP_OK);
 
-            if (!$user) {
-                throw $this->createNotFoundException();
-            }
+            return $response;
         }
 
         return View::create($form, 400);
@@ -157,6 +302,12 @@ class UserController extends FOSRestController
      * @param Request $request
      * @param User    $user
      * @return Response
+     *
+     * @SWG\Response(
+     *     response="202",
+     *     description="deleted user by id"
+     * )
+     * @SWG\Tag(name="users")
      */
     public function deleteAction(Request $request, User $user)
     {
