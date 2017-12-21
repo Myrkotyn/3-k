@@ -40,6 +40,13 @@ class UserController extends FOSRestController
      *     type="integer",
      *     description="The field used for limit items per page"
      * )
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     type="string",
+     *     description="JWT token for authentication",
+     *     required=true
+     * )
      * @SWG\Response(
      *     response="200",
      *     description="return list of users"
@@ -73,6 +80,13 @@ class UserController extends FOSRestController
      * @SWG\Response(
      *     response="200",
      *     description="return user by id"
+     * )
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     type="string",
+     *     description="JWT token for authentication",
+     *     required=true
      * )
      */
     public function getAction(int $id)
@@ -268,6 +282,13 @@ class UserController extends FOSRestController
      *          )
      *      )
      * )
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     type="string",
+     *     description="JWT token for authentication",
+     *     required=true
+     * )
      */
     public function editAction(Request $request, User $user)
     {
@@ -306,6 +327,13 @@ class UserController extends FOSRestController
      * @SWG\Response(
      *     response="202",
      *     description="deleted user by id"
+     * )
+     * @SWG\Parameter(
+     *     name="Authorization",
+     *     in="header",
+     *     type="string",
+     *     description="JWT token for authentication",
+     *     required=true
      * )
      * @SWG\Tag(name="users")
      */
