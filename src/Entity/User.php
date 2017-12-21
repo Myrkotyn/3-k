@@ -16,17 +16,17 @@ class User extends BaseUser
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
-     * @Groups({"user"})
+     * @Groups({"default"})
      */
     protected $id;
 
     /**
-     * @Groups({"user"})
+     * @Groups({"default"})
      */
     public $username;
 
     /**
-     * @Groups({"user"})
+     * @Groups({"default"})
      */
     public $email;
 }

@@ -21,19 +21,21 @@ class News
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"default"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
-     * @Groups({"group1"})
+     * @Groups({"default"})
      */
     private $title;
 
     /**
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
+     * @Groups({"default"})
      */
     private $description;
 

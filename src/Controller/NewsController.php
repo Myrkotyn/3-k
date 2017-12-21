@@ -26,7 +26,6 @@ use Swagger\Annotations as SWG;
  */
 class NewsController extends FOSRestController
 {
-    use ControllerHelper;
     use BlameableEntityTrait;
 
     /**
@@ -78,7 +77,7 @@ class NewsController extends FOSRestController
             $request->query->getInt('limit', 2)
         );
 
-        return new Response($this->get('serializer')->serialize($pagination, 'json', ['groups' => ['group1']]));
+        return new Response($this->get('serializer')->serialize($pagination, 'json', ['groups' => ['default']]));
     }
 
     /**
@@ -109,7 +108,7 @@ class NewsController extends FOSRestController
             throw new NotFoundHttpException('News not found');
         }
 
-        return new Response($this->get('serializer')->serialize($news, 'json', ['groups' => ['group1']]), Response::HTTP_OK);
+        return new Response($this->get('serializer')->serialize($news, 'json', ['groups' => ['default']]), Response::HTTP_OK);
     }
 
     /**
@@ -176,7 +175,7 @@ class NewsController extends FOSRestController
             $em->persist($news);
             $em->flush();
 
-            $response = new Response($this->serialize($news, 'json', $this->defaultNewsAttributes()), Response::HTTP_CREATED);
+            $response = new Response($this->get('serializer')->serialize($news, 'json', ['groups' => ['default']]), Response::HTTP_CREATED);
 
             return $response;
         }
@@ -248,7 +247,7 @@ class NewsController extends FOSRestController
             $em->persist($news);
             $em->flush();
 
-            $response = new Response($this->serialize($news, 'json', $this->defaultNewsAttributes()), Response::HTTP_OK);
+            $response = new Response($this->get('serializer')->serialize($news, 'json', ['groups' => ['default']]), Response::HTTP_OK);
 
             return $response;
         }
@@ -295,20 +294,6 @@ class NewsController extends FOSRestController
         $event = new NewsDeletedEvent();
         $eventName = $dispatcher->dispatch(NewsDeletedEvent::NAME, $event)->eventName();
 
-        return new JsonResponse($this->serialize($eventName, 'json'), Response::HTTP_NO_CONTENT);
-    }
-
-    private function defaultNewsAttributes()
-    {
-        return [
-            'id',
-            'title',
-            'description',
-            'createdAt' => [
-                'timestamp'
-            ],
-            'createdBy' => [
-                'id', 'username', 'email',
-            ]];
+        return new JsonResponse($this->get('serializer')->serialize($eventName, 'json'), Response::HTTP_NO_CONTENT);
     }
 }

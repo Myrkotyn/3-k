@@ -21,8 +21,6 @@ use Symfony\Component\Security\Core\Exception\BadCredentialsException;
  */
 class UserController extends FOSRestController
 {
-    use ControllerHelper;
-
     /**
      * @Rest\Get("", name="get_all_users")
      *
@@ -71,7 +69,7 @@ class UserController extends FOSRestController
             $request->query->getInt('limit', 5)
         );
 
-        return new Response($this->serialize($pagination, 'json', ['id', 'username', 'email']), Response::HTTP_OK);
+        return new Response($this->get('serializer')->serialize($pagination, 'json', ["groups" => ["default"]]), Response::HTTP_OK);
     }
 
     /**
@@ -101,7 +99,7 @@ class UserController extends FOSRestController
             throw new NotFoundHttpException('User not found');
         }
 
-        return new Response($this->serialize($user, 'json', ['id', 'username', 'email']), Response::HTTP_OK);
+        return new Response($this->get('serializer')->serialize($user, 'json', ["groups" => ["default"]]), Response::HTTP_OK);
     }
 
     /**
@@ -160,7 +158,7 @@ class UserController extends FOSRestController
             $em->persist($apiUser);
             $em->flush();
 
-            $response = new Response($this->serialize($apiUser, 'json', ['id', 'username', 'email']), Response::HTTP_CREATED);
+            $response = new Response($this->get('serializer')->serialize($apiUser, 'json', ["groups" => ["default"]]), Response::HTTP_CREATED);
 
             return $response;
         }
@@ -233,7 +231,7 @@ class UserController extends FOSRestController
 
             $token = $this->getToken($user);
 
-            return new Response($this->serialize(['Authorization' => $token], 'json'), Response::HTTP_OK);
+            return new Response($this->get('serializer')->serialize(['Authorization' => $token], 'json'), Response::HTTP_OK);
         }
 
         return View::create($form, 400);
@@ -313,7 +311,7 @@ class UserController extends FOSRestController
             $em->persist($user);
             $em->flush();
 
-            $response = new Response($this->serialize($user, 'json', ['id', 'username', 'email']), Response::HTTP_OK);
+            $response = new Response($this->get('serializer')->serialize($user, 'json', ["groups" => ["default"]]), Response::HTTP_OK);
 
             return $response;
         }
