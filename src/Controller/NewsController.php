@@ -206,7 +206,6 @@ class NewsController extends FOSRestController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $news->setCreatedBy($user);
             $news->setUpdatedBy($user);
             $em->persist($news);
             $em->flush();
