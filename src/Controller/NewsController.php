@@ -84,7 +84,7 @@ class NewsController extends FOSRestController
      * @Rest\Get("/{id}", name="get_news")
      *
      * @param Request $request
-     * @param         $id
+     * @param News    $news
      * @return Response
      *
      * @SWG\Tag(name="news")
@@ -100,10 +100,8 @@ class NewsController extends FOSRestController
      *     required=true
      * )
      */
-    public function getAction(Request $request, $id)
+    public function getAction(Request $request, News $news)
     {
-        $news = $this->getDoctrine()->getRepository('App:News')->find($id);
-
         if (!$news instanceof News) {
             throw new NotFoundHttpException('News not found');
         }
@@ -164,7 +162,7 @@ class NewsController extends FOSRestController
         }
         $news = new News();
         $form = $this->createForm(NewsType::class, $news, [
-            'method' => 'POST',
+            'method' => Request::METHOD_POST,
         ]);
 
         $form->handleRequest($request);
@@ -232,12 +230,9 @@ class NewsController extends FOSRestController
     public function editAction(Request $request, News $news)
     {
         $user = $this->getUser();
-        $this->denyAccessUnlessGranted('edit', $news);
-        if (null === $user) {
-            throw new UnauthorizedHttpException('You need to be authorized');
-        }
+        $this->denyAccessUnlessGranted(NewsVoter::EDIT, $news);
         $form = $this->createForm(NewsType::class, $news, [
-            'method' => 'PUT',
+            'method' => Request::METHOD_PUT,
         ]);
 
         $form->handleRequest($request);
@@ -247,9 +242,7 @@ class NewsController extends FOSRestController
             $em->persist($news);
             $em->flush();
 
-            $response = new Response($this->get('serializer')->serialize($news, 'json', ['groups' => ['default']]), Response::HTTP_OK);
-
-            return $response;
+            return new Response($this->get('serializer')->serialize($news, 'json', ['groups' => ['default']]), Response::HTTP_OK);
         }
 
         return View::create($form, 400);

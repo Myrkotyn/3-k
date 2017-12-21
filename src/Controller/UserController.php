@@ -303,7 +303,7 @@ class UserController extends FOSRestController
         }
 
         $form = $this->createForm(UserType::class, $user, [
-            'method' => 'PUT',
+            'method' => Request::METHOD_POST,
         ]);
         $form->handleRequest($request);
 
