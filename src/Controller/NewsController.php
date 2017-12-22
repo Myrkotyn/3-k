@@ -13,7 +13,6 @@ use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use FOS\RestBundle\Controller\Annotations\View as DocView;
 
 /**
  * Class NewsController
@@ -222,7 +221,7 @@ class NewsController extends FOSRestController
      * )
      * @SWG\Response(
      *     response=422,
-     *     description="Unprocessable entity,
+     *     description="Unprocessable entity",
      * )
      */
     public function updateAction(Request $request, News $news)
