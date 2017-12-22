@@ -16,8 +16,7 @@ class NewsType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('description')
-        ;
+            ->add('description');
     }
 
     /**
@@ -26,8 +25,8 @@ class NewsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => News::class,
-            'csrf_protection'   => false,
+            'data_class'      => News::class,
+            'csrf_protection' => false,
         ]);
     }
 
