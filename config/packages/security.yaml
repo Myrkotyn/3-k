@@ -25,12 +25,12 @@ security:
             anonymous:    true
 
     access_control:
-        - { path: ^/login$,       roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login$,            roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/user/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/user/login,    roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/doc,      roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api/user,     roles: ROLE_USER }
-        - { path: ^/api/*,        roles: ROLE_USER }
-        - { path: ^/resetting,    roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/admin/,       roles: ROLE_ADMIN }
+        - { path: ^/api/doc,           roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/user,          roles: ROLE_USER }
+        - { path: ^/api/*,             roles: ROLE_USER }
+        - { path: ^/resetting,         roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/,            roles: ROLE_ADMIN }
 
