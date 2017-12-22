@@ -25,7 +25,7 @@ class UserController extends FOSRestController
      * @Rest\Get("", name="get_all_users")
      *
      * @param Request $request
-     * @return Response
+     * @return View
      *
      * @SWG\Tag(name="users")
      * @SWG\Parameter(
@@ -59,7 +59,7 @@ class UserController extends FOSRestController
         $users = $this->getDoctrine()->getRepository('App:User')->findAll();
 
         if ($users === null) {
-            return new Response("", Response::HTTP_NOT_FOUND);
+            return View::create("", Response::HTTP_NOT_FOUND);
         }
 
         $paginator = $this->get('knp_paginator');
@@ -69,14 +69,14 @@ class UserController extends FOSRestController
             $request->query->getInt('limit', 5)
         );
 
-        return new Response($this->get('serializer')->serialize($pagination, 'json', ["groups" => ["default"]]), Response::HTTP_OK);
+        return View::create($this->get('serializer')->serialize($pagination, 'json', ["groups" => ["default"]]), Response::HTTP_OK);
     }
 
     /**
-     * @param int $id
+     * @param User $user
      * @Rest\Get("/{id}", name="get_user")
      *
-     * @return Response
+     * @return View
      *
      * @SWG\Tag(name="users")
      * @SWG\Response(
@@ -91,22 +91,20 @@ class UserController extends FOSRestController
      *     required=true
      * )
      */
-    public function getAction(int $id)
+    public function getAction(User $user)
     {
-        $user = $this->getDoctrine()->getRepository('App:User')->find($id);
-
         if (!$user instanceof User) {
             throw new NotFoundHttpException('User not found');
         }
 
-        return new Response($this->get('serializer')->serialize($user, 'json', ["groups" => ["default"]]), Response::HTTP_OK);
+        return View::create($this->get('serializer')->serialize($user, 'json', ["groups" => ["default"]]), Response::HTTP_OK);
     }
 
     /**
      * @param Request $request
      * @Rest\Post("/register", name="register")
      *
-     * @return Response|static|View
+     * @return View
      *
      * @SWG\Tag(name="users")
      * @SWG\Parameter(
@@ -158,12 +156,10 @@ class UserController extends FOSRestController
             $em->persist($apiUser);
             $em->flush();
 
-            $response = new Response($this->get('serializer')->serialize($apiUser, 'json', ["groups" => ["default"]]), Response::HTTP_CREATED);
-
-            return $response;
+            return View::create($this->get('serializer')->serialize($apiUser, 'json', ["groups" => ["default"]]), Response::HTTP_CREATED);
         }
 
-        return View::create($form, 400);
+        return View::create($form, Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**
@@ -171,7 +167,7 @@ class UserController extends FOSRestController
      * @Rest\Post("/login", name="login")
      * @throws JWTEncodeFailureException
      *
-     * @return Response|View
+     * @return View
      *
      * @SWG\Tag(name="users")
      * @SWG\Response(
@@ -231,10 +227,10 @@ class UserController extends FOSRestController
 
             $token = $this->getToken($user);
 
-            return new Response($this->get('serializer')->serialize(['Authorization' => $token], 'json'), Response::HTTP_OK);
+            return View::create($this->get('serializer')->serialize(['Authorization' => $token], 'json'), Response::HTTP_OK);
         }
 
-        return View::create($form, 400);
+        return View::create($form, Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**
@@ -242,7 +238,7 @@ class UserController extends FOSRestController
      * @param User    $user
      * @Rest\Put("/{id}", name="edit_user")
      *
-     * @return View|Response
+     * @return View
      *
      * @SWG\Tag(name="users")
      * @SWG\Response(
@@ -311,12 +307,10 @@ class UserController extends FOSRestController
             $em->persist($user);
             $em->flush();
 
-            $response = new Response($this->get('serializer')->serialize($user, 'json', ["groups" => ["default"]]), Response::HTTP_OK);
-
-            return $response;
+            return View::create($this->get('serializer')->serialize($user, 'json', ["groups" => ["default"]]), Response::HTTP_OK);
         }
 
-        return View::create($form, 400);
+        return View::create($form, Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**
@@ -324,7 +318,7 @@ class UserController extends FOSRestController
      *
      * @param Request $request
      * @param User    $user
-     * @return Response
+     * @return View
      *
      * @SWG\Response(
      *     response="202",
@@ -349,7 +343,7 @@ class UserController extends FOSRestController
         $em->remove($user);
         $em->flush();
 
-        return new Response('', Response::HTTP_ACCEPTED);
+        return View::create('', Response::HTTP_NO_CONTENT);
     }
 
     /**

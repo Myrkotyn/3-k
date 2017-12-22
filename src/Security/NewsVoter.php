@@ -53,5 +53,6 @@ class NewsVoter extends Voter
         if ($this->canEdit($news, $user)) {
             return true;
         }
+        return false;
     }
 }

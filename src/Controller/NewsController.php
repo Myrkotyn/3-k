@@ -3,21 +3,17 @@
 namespace App\Controller;
 
 use App\Entity\News;
-use App\Event\AppEvents;
 use App\Event\NewNewsEvent;
-use App\EventListener\NewNewsListener;
-use App\EventListener\NewsBlameableEvent;
 use App\Form\NewsType;
 use App\Security\NewsVoter;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
 use Swagger\Annotations as SWG;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use FOS\RestBundle\Controller\Annotations\View as DocView;
 
 /**
  * Class NewsController
@@ -30,7 +26,7 @@ class NewsController extends FOSRestController
      * @Rest\Get("", name="get_all_news")
      *
      * @param Request $request
-     * @return Response
+     * @return View
      *
      * @SWG\Response(
      *     response="200",
@@ -75,7 +71,7 @@ class NewsController extends FOSRestController
             $request->query->getInt('limit', 2)
         );
 
-        return new Response($this->get('serializer')->serialize($pagination, 'json', ['groups' => ['default']]));
+        return View::create($this->get('serializer')->normalize($pagination, '', ['groups' => ['default']]), Response::HTTP_OK);
     }
 
     /**
@@ -83,7 +79,7 @@ class NewsController extends FOSRestController
      *
      * @param Request $request
      * @param News    $news
-     * @return Response
+     * @return View
      *
      * @SWG\Tag(name="news")
      * @SWG\Response(
@@ -104,14 +100,14 @@ class NewsController extends FOSRestController
             throw new NotFoundHttpException('News not found');
         }
 
-        return new Response($this->get('serializer')->serialize($news, 'json', ['groups' => ['default']]), Response::HTTP_OK);
+        return View::create($this->get('serializer')->serialize($news, 'json', ['groups' => ['default']]), Response::HTTP_OK);
     }
 
     /**
      * @Rest\Post("", name="new_news")
      *
      * @param Request $request
-     * @return Response|View
+     * @return View
      *
      * @SWG\Tag(name="news")
      * @SWG\Parameter(
@@ -169,9 +165,7 @@ class NewsController extends FOSRestController
             $em->persist($news);
             $em->flush();
 
-            $response = new Response($this->get('serializer')->serialize($news, 'json', ['groups' => ['default']]), Response::HTTP_CREATED);
-
-            return $response;
+             return View::create($this->get('serializer')->serialize($news, 'json', ['groups' => ['default']]), Response::HTTP_CREATED);
         }
 
         return View::create($form, Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -182,7 +176,7 @@ class NewsController extends FOSRestController
      *
      * @param Request $request
      * @param News    $news
-     * @return Response|View
+     * @return View
      *
      * @SWG\Tag(name="news")
      * @SWG\Parameter(
@@ -238,10 +232,10 @@ class NewsController extends FOSRestController
             $em->persist($news);
             $em->flush();
 
-            return new Response($this->get('serializer')->serialize($news, 'json', ['groups' => ['default']]), Response::HTTP_OK);
+            return View::create($this->get('serializer')->serialize($news, 'json', ['groups' => ['default']]), Response::HTTP_OK);
         }
 
-        return View::create($form, 400);
+        return View::create($form, Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**
@@ -249,7 +243,7 @@ class NewsController extends FOSRestController
      *
      * @param Request $request
      * @param News    $news
-     * @return Response
+     * @return View
      *
      * @SWG\Response(
      *     response="202",
@@ -279,6 +273,6 @@ class NewsController extends FOSRestController
         $em->remove($news);
         $em->flush();
 
-        return new JsonResponse($this->get('serializer')->serialize($eventName, 'json'), Response::HTTP_NO_CONTENT);
+        return View::create($this->get('serializer')->serialize('', 'json'), Response::HTTP_NO_CONTENT);
     }
 }
