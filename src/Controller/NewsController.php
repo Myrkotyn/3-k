@@ -103,10 +103,6 @@ class NewsController extends FOSRestController
      */
     public function getAction(Request $request, News $news)
     {
-        if (!$news instanceof News) {
-            throw new NotFoundHttpException('News not found');
-        }
-
         return View::create($this->get('serializer')->normalize($news, 'json', ['groups' => ['default']]), Response::HTTP_OK);
     }
 
