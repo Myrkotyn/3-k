@@ -14,8 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class News
 {
-    use BlameableEntityTrait;
-    use TimestampableEntity;
+    use BlameableEntityTrait, TimestampableEntity;
 
     /**
      * @ORM\Id

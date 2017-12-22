@@ -3,21 +3,21 @@
 namespace App\Controller;
 
 use App\Entity\News;
-use App\EventListener\NewsDeletedEvent;
+use App\Event\AppEvents;
+use App\Event\NewNewsEvent;
+use App\EventListener\NewNewsListener;
+use App\EventListener\NewsBlameableEvent;
 use App\Form\NewsType;
-use App\Helpers\BlameableEntityTrait;
-use App\Helpers\ControllerHelper;
 use App\Security\NewsVoter;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
+use Swagger\Annotations as SWG;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Swagger\Annotations as SWG;
 
 /**
  * Class NewsController
@@ -26,8 +26,6 @@ use Swagger\Annotations as SWG;
  */
 class NewsController extends FOSRestController
 {
-    use BlameableEntityTrait;
-
     /**
      * @Rest\Get("", name="get_all_news")
      *
@@ -61,7 +59,7 @@ class NewsController extends FOSRestController
      * )
      * @SWG\Tag(name="news")
      */
-    public function allAction(Request $request)
+    public function getAllAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $news = $em->getRepository('App:News')->findAll();
@@ -154,12 +152,9 @@ class NewsController extends FOSRestController
      *     description="Expired JWT Token | JWT Token not found | Invalid JWT Token",
      * )
      */
-    public function newAction(Request $request)
+    public function createAction(Request $request)
     {
         $user = $this->getUser();
-        if (null === $user) {
-            throw new UnauthorizedHttpException('You need to be authorized');
-        }
         $news = new News();
         $form = $this->createForm(NewsType::class, $news, [
             'method' => Request::METHOD_POST,
@@ -168,8 +163,9 @@ class NewsController extends FOSRestController
         $form->handleRequest($request);
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $news->setCreatedBy($user);
-            $news->setUpdatedBy($user);
+
+            $this->get('event_dispatcher')->dispatch(NewNewsEvent::NAME, new NewNewsEvent($news, $user));
+
             $em->persist($news);
             $em->flush();
 
@@ -227,7 +223,7 @@ class NewsController extends FOSRestController
      *     description="Expired JWT Token | JWT Token not found | Invalid JWT Token",
      * )
      */
-    public function editAction(Request $request, News $news)
+    public function updateAction(Request $request, News $news)
     {
         $user = $this->getUser();
         $this->denyAccessUnlessGranted(NewsVoter::EDIT, $news);
@@ -282,10 +278,6 @@ class NewsController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
         $em->remove($news);
         $em->flush();
-
-        $dispatcher = new EventDispatcher();
-        $event = new NewsDeletedEvent();
-        $eventName = $dispatcher->dispatch(NewsDeletedEvent::NAME, $event)->eventName();
 
         return new JsonResponse($this->get('serializer')->serialize($eventName, 'json'), Response::HTTP_NO_CONTENT);
     }

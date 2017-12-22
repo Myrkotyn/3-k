@@ -15,8 +15,6 @@ trait BlameableEntityTrait
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
-     *
-     * @Gedmo\Versioned
      */
     private $createdBy;
 
@@ -25,8 +23,6 @@ trait BlameableEntityTrait
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false)
-     *
-     * @Gedmo\Versioned
      */
     private $updatedBy;
 
