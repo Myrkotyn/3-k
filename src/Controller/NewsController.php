@@ -267,9 +267,6 @@ class NewsController extends FOSRestController
      */
     public function deleteAction(Request $request, News $news)
     {
-        if (!$news instanceof News) {
-            throw new NotFoundHttpException('News not found');
-        }
         $this->denyAccessUnlessGranted(NewsVoter::DELETE, $news);
 
         $em = $this->getDoctrine()->getManager();
