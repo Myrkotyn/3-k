@@ -29,4 +29,35 @@ class User extends BaseUser
      * @Groups({"default"})
      */
     public $email;
+
+    /**
+     * Returns token for user.
+     *
+     * @param User $user
+     *
+     * @return array
+     * @throws JWTEncodeFailureException
+     */
+    private function getToken(User $user)
+    {
+        return $this->container->get('lexik_jwt_authentication.encoder')
+            ->encode([
+                'username' => $user->getUsername(),
+                'exp'      => $this->getTokenExpiryDateTime(),
+            ]);
+    }
+
+    /**
+     * Returns token expiration datetime.
+     *
+     * @return string Unixtmestamp
+     */
+    private function getTokenExpiryDateTime()
+    {
+        $tokenTtl = $this->container->getParameter('lexik_jwt_authentication.token_ttl');
+        $now = new \DateTime();
+        $now->add(new \DateInterval('PT' . $tokenTtl . 'S'));
+
+        return $now->format('U');
+    }
 }

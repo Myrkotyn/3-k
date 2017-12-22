@@ -100,7 +100,7 @@ class NewsController extends FOSRestController
             throw new NotFoundHttpException('News not found');
         }
 
-        return View::create($this->get('serializer')->serialize($news, 'json', ['groups' => ['default']]), Response::HTTP_OK);
+        return View::create($this->get('serializer')->normalize($news, 'json', ['groups' => ['default']]), Response::HTTP_OK);
     }
 
     /**
@@ -165,7 +165,7 @@ class NewsController extends FOSRestController
             $em->persist($news);
             $em->flush();
 
-             return View::create($this->get('serializer')->serialize($news, 'json', ['groups' => ['default']]), Response::HTTP_CREATED);
+             return View::create($this->get('serializer')->normalize($news, 'json', ['groups' => ['default']]), Response::HTTP_CREATED);
         }
 
         return View::create($form, Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -232,7 +232,7 @@ class NewsController extends FOSRestController
             $em->persist($news);
             $em->flush();
 
-            return View::create($this->get('serializer')->serialize($news, 'json', ['groups' => ['default']]), Response::HTTP_OK);
+            return View::create($this->get('serializer')->normalize($news, '', ['groups' => ['default']]), Response::HTTP_OK);
         }
 
         return View::create($form, Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -273,6 +273,6 @@ class NewsController extends FOSRestController
         $em->remove($news);
         $em->flush();
 
-        return View::create($this->get('serializer')->serialize('', 'json'), Response::HTTP_NO_CONTENT);
+        return View::create('', Response::HTTP_NO_CONTENT);
     }
 }

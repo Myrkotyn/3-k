@@ -54,7 +54,7 @@ class UserController extends FOSRestController
      *     description="return list of users"
      * )
      */
-    public function allAction(Request $request)
+    public function getAllAction(Request $request)
     {
         $users = $this->getDoctrine()->getRepository('App:User')->findAll();
 
@@ -69,7 +69,7 @@ class UserController extends FOSRestController
             $request->query->getInt('limit', 5)
         );
 
-        return View::create($this->get('serializer')->serialize($pagination, 'json', ["groups" => ["default"]]), Response::HTTP_OK);
+        return View::create($this->get('serializer')->normalize($pagination, 'json', ["groups" => ["default"]]), Response::HTTP_OK);
     }
 
     /**
@@ -97,7 +97,7 @@ class UserController extends FOSRestController
             throw new NotFoundHttpException('User not found');
         }
 
-        return View::create($this->get('serializer')->serialize($user, 'json', ["groups" => ["default"]]), Response::HTTP_OK);
+        return View::create($this->get('serializer')->normalize($user, 'json', ["groups" => ["default"]]), Response::HTTP_OK);
     }
 
     /**
@@ -151,12 +151,11 @@ class UserController extends FOSRestController
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $apiUser = $form->getData();
             $apiUser->setEnabled(true);
             $em->persist($apiUser);
             $em->flush();
 
-            return View::create($this->get('serializer')->serialize($apiUser, 'json', ["groups" => ["default"]]), Response::HTTP_CREATED);
+            return View::create($this->get('serializer')->normalize($apiUser, 'json', ["groups" => ["default"]]), Response::HTTP_CREATED);
         }
 
         return View::create($form, Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -227,7 +226,7 @@ class UserController extends FOSRestController
 
             $token = $this->getToken($user);
 
-            return View::create($this->get('serializer')->serialize(['Authorization' => $token], 'json'), Response::HTTP_OK);
+            return View::create($this->get('serializer')->normalize(['Authorization' => $token], 'json'), Response::HTTP_OK);
         }
 
         return View::create($form, Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -288,7 +287,7 @@ class UserController extends FOSRestController
      *     required=true
      * )
      */
-    public function editAction(Request $request, User $user)
+    public function updateAction(Request $request, User $user)
     {
         $em = $this->getDoctrine()->getManager();
         $user = $em->getRepository('App:User')
@@ -299,7 +298,7 @@ class UserController extends FOSRestController
         }
 
         $form = $this->createForm(UserType::class, $user, [
-            'method' => Request::METHOD_POST,
+            'method' => Request::METHOD_PUT,
         ]);
         $form->handleRequest($request);
 
@@ -307,7 +306,7 @@ class UserController extends FOSRestController
             $em->persist($user);
             $em->flush();
 
-            return View::create($this->get('serializer')->serialize($user, 'json', ["groups" => ["default"]]), Response::HTTP_OK);
+            return View::create($this->get('serializer')->normalize($user, 'json', ["groups" => ["default"]]), Response::HTTP_OK);
         }
 
         return View::create($form, Response::HTTP_UNPROCESSABLE_ENTITY);
