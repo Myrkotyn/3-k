@@ -32,6 +32,10 @@ class NewsController extends FOSRestController
      *     response="200",
      *     description="return list of news"
      * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Not found"
+     * )
      * @SWG\Parameter(
      *     name="page",
      *     in="query",
@@ -85,6 +89,10 @@ class NewsController extends FOSRestController
      * @SWG\Response(
      *     response="200",
      *     description="return news by id"
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Not found"
      * )
      * @SWG\Parameter(
      *     name="Authorization",
@@ -144,8 +152,8 @@ class NewsController extends FOSRestController
      *     description="created a new post of news"
      * )
      * @SWG\Response(
-     *     response=401,
-     *     description="Expired JWT Token | JWT Token not found | Invalid JWT Token",
+     *     response=422,
+     *     description="Unprocessable entity",
      * )
      */
     public function createAction(Request $request)
@@ -209,12 +217,12 @@ class NewsController extends FOSRestController
      *     required=true
      * )
      * @SWG\Response(
-     *     response="201",
+     *     response="200",
      *     description="create a new post of news"
      * )
      * @SWG\Response(
-     *     response=401,
-     *     description="Expired JWT Token | JWT Token not found | Invalid JWT Token",
+     *     response=422,
+     *     description="Unprocessable entity,
      * )
      */
     public function updateAction(Request $request, News $news)
@@ -246,7 +254,7 @@ class NewsController extends FOSRestController
      * @return View
      *
      * @SWG\Response(
-     *     response="202",
+     *     response="204",
      *     description="deleted news by id"
      * )
      * @SWG\Response(

@@ -53,6 +53,10 @@ class UserController extends FOSRestController
      *     response="200",
      *     description="return list of users"
      * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Not found"
+     * )
      */
     public function getAllAction(Request $request)
     {
@@ -82,6 +86,10 @@ class UserController extends FOSRestController
      * @SWG\Response(
      *     response="200",
      *     description="return user by id"
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Not fount"
      * )
      * @SWG\Parameter(
      *     name="Authorization",
@@ -139,8 +147,8 @@ class UserController extends FOSRestController
      *     description="created a new user"
      * )
      * @SWG\Response(
-     *     response=401,
-     *     description="Expired JWT Token | JWT Token not found | Invalid JWT Token",
+     *     response=422,
+     *     description="Unprocessable entity",
      * )
      */
     public function registerAction(Request $request)
@@ -174,7 +182,7 @@ class UserController extends FOSRestController
      *     description="user logged in"
      * )
      * @SWG\Response(
-     *     response="400",
+     *     response="422",
      *     description="Bad credentials"
      * )
      * @SWG\Parameter(
@@ -249,7 +257,7 @@ class UserController extends FOSRestController
      *     description="Not found"
      * )
      * @SWG\Response(
-     *     response="400",
+     *     response="422",
      *     description="Form is not valid, or not submitted"
      * )
      * @SWG\Response(
@@ -320,8 +328,12 @@ class UserController extends FOSRestController
      * @return View
      *
      * @SWG\Response(
-     *     response="202",
+     *     response="204",
      *     description="deleted user by id"
+     * )
+     * @SWG\Response(
+     *     response="404",
+     *     description="Not found"
      * )
      * @SWG\Parameter(
      *     name="Authorization",
