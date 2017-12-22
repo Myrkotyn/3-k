@@ -297,12 +297,6 @@ class UserController extends FOSRestController
     public function updateAction(Request $request, User $user)
     {
         $em = $this->getDoctrine()->getManager();
-        $user = $em->getRepository('App:User')
-            ->findOneBy(['email' => $user->email]);
-
-        if (!$user) {
-            throw $this->createNotFoundException();
-        }
 
         $form = $this->createForm(UserType::class, $user, [
             'method' => Request::METHOD_PUT,
